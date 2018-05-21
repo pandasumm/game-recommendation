@@ -45,13 +45,14 @@ if __name__ == "__main__":
     dataset = pd.read_csv("./games_added_publisher.csv")
     dataset.at[dataset['user_score'].abs() <= 5, 'user_score'] = 0
     dataset.at[dataset['user_score'].abs() > 5, 'user_score'] = 1
-
     resY = dataset.user_score
+    dataset.drop(['user_score'], axis = 1)
+    
     dataX = dataCleaning(dataset)
 
     dataX.to_csv('./temp.csv', index=False)
 
-    classifier = KNeighborsClassifier(n_neighbors = 3, metric = 'minkowski', p = 2)
+    classifier = KNeighborsClassifier(n_neighbors = 15, metric = 'minkowski', p = 2)
 
     classifier.fit(dataX, resY)
     accuracies = cross_val_score(estimator = classifier, X = dataX, y= resY, cv = 10)
