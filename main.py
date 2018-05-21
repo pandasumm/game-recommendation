@@ -13,6 +13,8 @@ def dataCleaning(dataset):
     dataset.rating = dataset.rating.fillna('E')
     dataset.rating = LabelEncoder().fit_transform(dataset.rating)
     dataset.platform = LabelEncoder().fit_transform(dataset.platform)
+    dataset.publisher = LabelEncoder().fit_transform(dataset.publisher)
+
 
     genre = dataset.genre
     lenData = genre.shape[0]
@@ -40,7 +42,7 @@ def dataCleaning(dataset):
 
 if __name__ == "__main__":
 
-    dataset = pd.read_csv("./games_final.csv")
+    dataset = pd.read_csv("./games_added_publisher.csv")
     dataset.at[dataset['user_score'].abs() <= 5, 'user_score'] = 0
     dataset.at[dataset['user_score'].abs() > 5, 'user_score'] = 1
 
