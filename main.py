@@ -1,9 +1,11 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
+from sklearn.tree import DecisionTreeClassifier
 # from sklearn.ensemble import RandomForestClassifier
 # from sklearn.linear_model import LogisticRegression
 
@@ -58,15 +60,33 @@ if __name__ == "__main__":
     dataX.to_csv('./temp.csv', index=False)
 
     # 15-NN classifier
-    classifier = KNeighborsClassifier(n_neighbors = 15, metric = 'minkowski', p = 2)
-    classifier.fit(dataX, resY)
-    accuracies = cross_val_score(estimator = classifier, X = dataX, y= resY, cv = 10)
-    print("15-nn classifier accuracies: ", accuracies.mean(), "+/-", accuracies.std(),"\n")
+    accuracies = []
+    # for k in range(3, 31):
+    #     classifier = KNeighborsClassifier(n_neighbors = k, metric = 'minkowski', p = 2)
+    #     classifier.fit(dataX, resY)
+    #     accuracy = cross_val_score(estimator = classifier, X = dataX, y= resY, cv = 10)
+    #     accuracies.append(accuracy.mean())
+    # print("15-nn classifier accuracies: ", accuracies.mean(), "+/-", accuracies.std(),"\n")
 
 
     # MLPClassifier, multi layer perceptron
-    # classifier = KNeighborsClassifier(n_neighbors = 15, metric = 'minkowski', p = 2)
-    classifier = MLPClassifier(solver='lbfgs', alpha = 1e-5, hidden_layer_sizes=(5,2), random_state=1)
-    classifier.fit(dataX, resY)
-    accuracies = cross_val_score(estimator = classifier, X = dataX, y= resY, cv = 10)
-    print("multi layer perceptron accuracies: ", accuracies.mean(), "+/-", accuracies.std(),"\n")
+    # for k in range(10,201,10):
+    #     classifier = MLPClassifier(solver='lbfgs', alpha = 1e-5, hidden_layer_sizes=(k,), random_state=1)
+    #     classifier.fit(dataX, resY)
+    #     accuracy = cross_val_score(estimator = classifier, X = dataX, y= resY, cv = 10)
+    #     accuracies.append(accuracy)
+    # print("multi layer perceptron accuracies: ", accuracies.mean(), "+/-", accuracies.std(),"\n")
+
+    for k in range(2,16):
+        classifier = DecisionTreeClassifier(max_depth=k)
+        classifier.fit(dataX, resY)
+        accuracy = cross_val_score(estimator = classifier, X = dataX, y= resY,   cv = 10)
+        accuracies.append(accuracy.mean())
+    # print("Decision Tree Classifier accuracies: ", accuracies.mean(), "+/-",    accuracies.std(),"\n")
+
+    print(accuracies)
+    plt.plot(range(2,16), accuracies, 'ro')
+    plt.axis([2, 15, 0.4, 0.65])
+    plt.xlabel('max depth in DT')
+    plt.ylabel('accuracy')
+    plt.show()
